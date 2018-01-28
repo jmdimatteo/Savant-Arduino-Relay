@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="racepoint_component_profile.xsd" manufacturer="Arduino" model="Relay-8" device_class="Contact_relay_environment_device" minimum_component_engine_version="0.0" rpm_xml_version="2.1">
+    <notes>
+        This profile requires accompanying code to be compiled and uploaded to Arduino via USB. Pins 0/1 of the Arduino are used for TTL communication and will require a TTL to RS232 converter. Pins 4-11 are used to control the attached relays.
+        
+		====================== Change Log ==================
+        Version: 2.1 Change: Initial Build
+        Version: 1.2 Change: Version Number bump to support new Savant Revisioning Scheme.  Risk: Low Importance: Forced
+    </notes>
+    <control_interfaces preferred="rs232">
+        <rs232 data_length="8" parity_bit="no" stop_bit="1" preferred_baud_rate="9600" response_time_length_ms="500" flow_control="none" name_on_component="RS232 Input" connector_type="db9 female" cable_type="rs232 straight">
+            <baud_rate speed="9600"></baud_rate>
+            <send_prefix type="character"></send_prefix>
+            <send_postfix type="character"></send_postfix>
+            <receive_end_condition test_condition="data" type="character"></receive_end_condition>
+        </rs232>
+    </control_interfaces>
+    <media_interfaces>
+        <internal name_on_component="DIGITALPIN_4">
+            <environmental_media/>
+            <resource resource_type="ENV_GENERALRELAYCONTROLLEDDEVICE_SOURCE"/>
+        </internal>
+        <internal name_on_component="DIGITALPIN_5">
+            <environmental_media/>
+            <resource resource_type="ENV_GENERALRELAYCONTROLLEDDEVICE_SOURCE"/>
+        </internal>
+        <internal name_on_component="DIGITALPIN_6">
+            <environmental_media/>
+            <resource resource_type="ENV_GENERALRELAYCONTROLLEDDEVICE_SOURCE"/>
+        </internal>
+        <internal name_on_component="DIGITALPIN_7">
+            <environmental_media/>
+            <resource resource_type="ENV_GENERALRELAYCONTROLLEDDEVICE_SOURCE"/>
+        </internal>
+        <internal name_on_component="DIGITALPIN_8">
+            <environmental_media/>
+            <resource resource_type="ENV_GENERALRELAYCONTROLLEDDEVICE_SOURCE"/>
+        </internal>
+        <internal name_on_component="DIGITALPIN_9">
+            <environmental_media/>
+            <resource resource_type="ENV_GENERALRELAYCONTROLLEDDEVICE_SOURCE"/>
+        </internal>
+        <internal name_on_component="DIGITALPIN_10">
+            <environmental_media/>
+            <resource resource_type="ENV_GENERALRELAYCONTROLLEDDEVICE_SOURCE"/>
+        </internal>
+        <internal name_on_component="DIGITALPIN_11">
+            <environmental_media/>
+            <resource resource_type="ENV_GENERALRELAYCONTROLLEDDEVICE_SOURCE"/>
+        </internal>
+    </media_interfaces>
+    <state_variable_list>
+    </state_variable_list>
+    <logical_component logical_component_name="Relay_1">
+        <implementation>
+            <internal name_on_component="DIGITALPIN_4"/>
+        </implementation>
+        <status_messages>
+            <status_message name="DIGITALPIN 4 Status">
+				<constant type="character">Pin 4 is </constant>
+				<data type="character" terminator_type="hex" terminator="0D0A">
+					<data_map match_required="yes">
+						<map key="LOW">
+							<update state="RelayState" type="string">closed</update>
+							<update state="IsOn" type="boolean">true</update>
+                            <update state="IsOff" type="boolean">false</update>
+							<update state="RelayIsClosed" type="boolean">1</update>
+                            <update state="RelayIsOpen" type="boolean">0</update>
+                            <update state="CurrentPowerStatus" type="string">on</update>
+						</map>
+						<map key="HIGH">
+							<update state="RelayState" type="string">open</update>
+							<update state="IsOn" type="boolean">false</update>
+                            <update state="IsOff" type="boolean">true</update>
+							<update state="RelayIsClosed" type="boolean">0</update>
+                            <update state="RelayIsOpen" type="boolean">1</update>
+                            <update state="CurrentPowerStatus" type="string">off</update>
+						</map>
+					</data_map>
+				</data>
+			</status_message>
+        </status_messages>
+        <universal_component_actions>
+            <action name="PowerOn">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/4/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/4/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PowerOff">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/4/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/4/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+        </universal_component_actions>
+        <custom_component_actions>
+            <action name="MomentaryOpen">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/4/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/4/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/4/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/4/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MomentaryClose">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/4/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/4/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/4/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/4/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="GetIndividualStatus">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">2/2/4/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+                <execute_on_schedule period_ms="30000"/>
+            </action>
+        </custom_component_actions>
+    </logical_component>
+    <logical_component logical_component_name="Relay_2">
+        <implementation>
+            <internal name_on_component="DIGITALPIN_5"/>
+        </implementation>
+        <status_messages>
+            <status_message name="DIGITALPIN 5 Status">
+				<constant type="character">Pin 5 is </constant>
+				<data type="character" terminator_type="hex" terminator="0D0A">
+					<data_map match_required="yes">
+						<map key="LOW">
+							<update state="RelayState" type="string">closed</update>
+							<update state="IsOn" type="boolean">true</update>
+                            <update state="IsOff" type="boolean">false</update>
+							<update state="RelayIsClosed" type="boolean">1</update>
+                            <update state="RelayIsOpen" type="boolean">0</update>
+                            <update state="CurrentPowerStatus" type="string">on</update>
+						</map>
+						<map key="HIGH">
+							<update state="RelayState" type="string">open</update>
+							<update state="IsOn" type="boolean">false</update>
+                            <update state="IsOff" type="boolean">true</update>
+							<update state="RelayIsClosed" type="boolean">0</update>
+                            <update state="RelayIsOpen" type="boolean">1</update>
+                            <update state="CurrentPowerStatus" type="string">off</update>
+						</map>
+					</data_map>
+				</data>
+			</status_message>
+        </status_messages>
+        <universal_component_actions>
+            <action name="PowerOn">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/5/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/5/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PowerOff">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/5/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/5/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+        </universal_component_actions>
+        <custom_component_actions>
+            <action name="MomentaryOpen">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/5/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/5/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/5/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/5/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MomentaryClose">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/5/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/5/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/5/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/5/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="GetIndividualStatus">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">2/2/5/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+                <execute_on_schedule period_ms="30000"/>
+            </action>
+        </custom_component_actions>
+    </logical_component>
+    <logical_component logical_component_name="Relay_3">
+        <implementation>
+            <internal name_on_component="DIGITALPIN_6"/>
+        </implementation>
+        <status_messages>
+            <status_message name="DIGITALPIN 6 Status">
+				<constant type="character">Pin 6 is </constant>
+				<data type="character" terminator_type="hex" terminator="0D0A">
+					<data_map match_required="yes">
+						<map key="LOW">
+							<update state="RelayState" type="string">closed</update>
+							<update state="IsOn" type="boolean">true</update>
+                            <update state="IsOff" type="boolean">false</update>
+							<update state="RelayIsClosed" type="boolean">1</update>
+                            <update state="RelayIsOpen" type="boolean">0</update>
+                            <update state="CurrentPowerStatus" type="string">on</update>
+						</map>
+						<map key="HIGH">
+							<update state="RelayState" type="string">open</update>
+							<update state="IsOn" type="boolean">false</update>
+                            <update state="IsOff" type="boolean">true</update>
+							<update state="RelayIsClosed" type="boolean">0</update>
+                            <update state="RelayIsOpen" type="boolean">1</update>
+                            <update state="CurrentPowerStatus" type="string">off</update>
+						</map>
+					</data_map>
+				</data>
+			</status_message>
+        </status_messages>
+        <universal_component_actions>
+            <action name="PowerOn">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/6/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/6/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PowerOff">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/6/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/6/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+        </universal_component_actions>
+        <custom_component_actions>
+            <action name="MomentaryOpen">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/6/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/6/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/6/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/6/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MomentaryClose">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/6/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/6/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/6/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/6/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="GetIndividualStatus">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">2/2/6/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+                <execute_on_schedule period_ms="30000"/>
+            </action>
+        </custom_component_actions>
+    </logical_component>
+    <logical_component logical_component_name="Relay_4">
+        <implementation>
+            <internal name_on_component="DIGITALPIN_7"/>
+        </implementation>
+        <status_messages>
+            <status_message name="DIGITALPIN 7 Status">
+				<constant type="character">Pin 7 is </constant>
+				<data type="character" terminator_type="hex" terminator="0D0A">
+					<data_map match_required="yes">
+						<map key="LOW">
+							<update state="RelayState" type="string">closed</update>
+							<update state="IsOn" type="boolean">true</update>
+                            <update state="IsOff" type="boolean">false</update>
+							<update state="RelayIsClosed" type="boolean">1</update>
+                            <update state="RelayIsOpen" type="boolean">0</update>
+                            <update state="CurrentPowerStatus" type="string">on</update>
+						</map>
+						<map key="HIGH">
+							<update state="RelayState" type="string">open</update>
+							<update state="IsOn" type="boolean">false</update>
+                            <update state="IsOff" type="boolean">true</update>
+							<update state="RelayIsClosed" type="boolean">0</update>
+                            <update state="RelayIsOpen" type="boolean">1</update>
+                            <update state="CurrentPowerStatus" type="string">off</update>
+						</map>
+					</data_map>
+				</data>
+			</status_message>
+        </status_messages>
+        <universal_component_actions>
+            <action name="PowerOn">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/7/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/7/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PowerOff">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/7/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/7/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+        </universal_component_actions>
+        <custom_component_actions>
+            <action name="MomentaryOpen">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/7/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/7/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/7/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/7/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MomentaryClose">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/7/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/7/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/7/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/7/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="GetIndividualStatus">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">2/2/7/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+                <execute_on_schedule period_ms="30000"/>
+            </action>
+        </custom_component_actions>
+    </logical_component>
+    <logical_component logical_component_name="Relay_5">
+        <implementation>
+            <internal name_on_component="DIGITALPIN_8"/>
+        </implementation>
+        <status_messages>
+            <status_message name="DIGITALPIN 8 Status">
+				<constant type="character">Pin 8 is </constant>
+				<data type="character" terminator_type="hex" terminator="0D0A">
+					<data_map match_required="yes">
+						<map key="LOW">
+							<update state="RelayState" type="string">closed</update>
+							<update state="IsOn" type="boolean">true</update>
+                            <update state="IsOff" type="boolean">false</update>
+							<update state="RelayIsClosed" type="boolean">1</update>
+                            <update state="RelayIsOpen" type="boolean">0</update>
+                            <update state="CurrentPowerStatus" type="string">on</update>
+						</map>
+						<map key="HIGH">
+							<update state="RelayState" type="string">open</update>
+							<update state="IsOn" type="boolean">false</update>
+                            <update state="IsOff" type="boolean">true</update>
+							<update state="RelayIsClosed" type="boolean">0</update>
+                            <update state="RelayIsOpen" type="boolean">1</update>
+                            <update state="CurrentPowerStatus" type="string">off</update>
+						</map>
+					</data_map>
+				</data>
+			</status_message>
+        </status_messages>
+        <universal_component_actions>
+            <action name="PowerOn">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/8/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/8/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PowerOff">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/8/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/8/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+        </universal_component_actions>
+        <custom_component_actions>
+            <action name="MomentaryOpen">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/8/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/8/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/8/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/8/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MomentaryClose">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/8/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/8/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/8/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/8/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="GetIndividualStatus">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">2/2/8/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+                <execute_on_schedule period_ms="30000"/>
+            </action>
+        </custom_component_actions>
+    </logical_component>
+    <logical_component logical_component_name="Relay_6">
+        <implementation>
+            <internal name_on_component="DIGITALPIN_9"/>
+        </implementation>
+        <status_messages>
+            <status_message name="DIGITALPIN 9 Status">
+				<constant type="character">Pin 9 is </constant>
+				<data type="character" terminator_type="hex" terminator="0D0A">
+					<data_map match_required="yes">
+						<map key="LOW">
+							<update state="RelayState" type="string">closed</update>
+							<update state="IsOn" type="boolean">true</update>
+                            <update state="IsOff" type="boolean">false</update>
+							<update state="RelayIsClosed" type="boolean">1</update>
+                            <update state="RelayIsOpen" type="boolean">0</update>
+                            <update state="CurrentPowerStatus" type="string">on</update>
+						</map>
+						<map key="HIGH">
+							<update state="RelayState" type="string">open</update>
+							<update state="IsOn" type="boolean">false</update>
+                            <update state="IsOff" type="boolean">true</update>
+							<update state="RelayIsClosed" type="boolean">0</update>
+                            <update state="RelayIsOpen" type="boolean">1</update>
+                            <update state="CurrentPowerStatus" type="string">off</update>
+						</map>
+					</data_map>
+				</data>
+			</status_message>
+        </status_messages>
+        <universal_component_actions>
+            <action name="PowerOn">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/9/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/9/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PowerOff">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/9/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/9/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+        </universal_component_actions>
+        <custom_component_actions>
+            <action name="MomentaryOpen">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/9/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/9/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/9/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/9/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MomentaryClose">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/9/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/9/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/9/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/9/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="GetIndividualStatus">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">2/2/9/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+                <execute_on_schedule period_ms="30000"/>
+            </action>
+        </custom_component_actions>
+    </logical_component>
+    <logical_component logical_component_name="Relay_7">
+        <implementation>
+            <internal name_on_component="DIGITALPIN_10"/>
+        </implementation>
+        <status_messages>
+            <status_message name="DIGITALPIN 10 Status">
+				<constant type="character">Pin 10 is </constant>
+				<data type="character" terminator_type="hex" terminator="0D0A">
+					<data_map match_required="yes">
+						<map key="LOW">
+							<update state="RelayState" type="string">closed</update>
+							<update state="IsOn" type="boolean">true</update>
+                            <update state="IsOff" type="boolean">false</update>
+							<update state="RelayIsClosed" type="boolean">1</update>
+                            <update state="RelayIsOpen" type="boolean">0</update>
+                            <update state="CurrentPowerStatus" type="string">on</update>
+						</map>
+						<map key="HIGH">
+							<update state="RelayState" type="string">open</update>
+							<update state="IsOn" type="boolean">false</update>
+                            <update state="IsOff" type="boolean">true</update>
+							<update state="RelayIsClosed" type="boolean">0</update>
+                            <update state="RelayIsOpen" type="boolean">1</update>
+                            <update state="CurrentPowerStatus" type="string">off</update>
+						</map>
+					</data_map>
+				</data>
+			</status_message>
+        </status_messages>
+        <universal_component_actions>
+            <action name="PowerOn">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/10/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/10/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PowerOff">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/10/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/10/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+        </universal_component_actions>
+        <custom_component_actions>
+            <action name="MomentaryOpen">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/10/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/10/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/10/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/10/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MomentaryClose">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/10/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/10/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/10/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/10/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="GetIndividualStatus">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">2/2/10/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+                <execute_on_schedule period_ms="30000"/>
+            </action>
+        </custom_component_actions>
+    </logical_component>
+    <logical_component logical_component_name="Relay_8">
+        <implementation>
+            <internal name_on_component="DIGITALPIN_11"/>
+        </implementation>
+        <status_messages>
+            <status_message name="DIGITALPIN 11 Status">
+				<constant type="character">Pin 11 is </constant>
+				<data type="character" terminator_type="hex" terminator="0D0A">
+					<data_map match_required="yes">
+						<map key="LOW">
+							<update state="RelayState" type="string">closed</update>
+							<update state="IsOn" type="boolean">true</update>
+                            <update state="IsOff" type="boolean">false</update>
+							<update state="RelayIsClosed" type="boolean">1</update>
+                            <update state="RelayIsOpen" type="boolean">0</update>
+                            <update state="CurrentPowerStatus" type="string">on</update>
+						</map>
+						<map key="HIGH">
+							<update state="RelayState" type="string">open</update>
+							<update state="IsOn" type="boolean">false</update>
+                            <update state="IsOff" type="boolean">true</update>
+							<update state="RelayIsClosed" type="boolean">0</update>
+                            <update state="RelayIsOpen" type="boolean">1</update>
+                            <update state="CurrentPowerStatus" type="string">off</update>
+						</map>
+					</data_map>
+				</data>
+			</status_message>
+        </status_messages>
+        <universal_component_actions>
+            <action name="PowerOn">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/11/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/11/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="PowerOff">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/11/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/11/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+        </universal_component_actions>
+        <custom_component_actions>
+            <action name="MomentaryOpen">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/11/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/11/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/11/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/11/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="MomentaryClose">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">1/2/11/1/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/11/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">1/2/11/2/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                    <command response_required="no">
+                        <command_string type="character">2/2/11/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+            </action>
+            <action name="GetIndividualStatus">
+                <command_interface interface="rs232">
+                    <command response_required="no">
+                        <command_string type="character">2/2/11/</command_string>
+                        <delay ms_delay="200"/>
+                    </command>
+                </command_interface>
+                <execute_on_schedule period_ms="30000"/>
+            </action>
+        </custom_component_actions>
+    </logical_component>
+</component>
